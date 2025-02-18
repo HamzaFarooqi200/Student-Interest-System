@@ -1,0 +1,194 @@
+﻿@model WebApplication3.Models.DashboardViewModel
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<h1>Dashboard</h1>
+
+<link rel="stylesheet" type="text/css" href="/css/dashboard.css">
+
+<div class="dashboard-container">
+    <!-- Top 5 Interests -->
+     <div class="dashboard-item top-interests" style="margin-bottom: 20px; text-align: center;">
+        <h2 style="color: #008000;">Top 5 Interests</h2>
+        @foreach (var interest in Model.Top5Interests)
+        {
+            <div style="background-color: #008000; color: #ffffff; padding: 10px; margin: 5px; display: inline-block; border-radius: 5px;">@interest</div>
+        }
+    </div>
+
+    <!-- Bottom 5 Interests -->
+        <div class="dashboard-item bottom-interests" style="margin-bottom: 20px; text-align: center;">
+        <h2 style="color: #ff0000;">Bottom 5 Interests</h2>
+        @foreach (var interest in Model.Bottom5Interests)
+        {
+            <div style="background-color: #ff0000; color: #ffffff; padding: 10px; margin: 5px; display: inline-block; border-radius: 5px;">@interest</div>
+        }
+    </div>
+
+
+    <!-- Distinct Interests -->
+        <div class="dashboard-item distinct-interests" style="margin-bottom: 20px; text-align: center;">
+        <h2 style="color: #333;">Distinct Interests</h2>
+        <p style="background-color: #f2f2f2; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">Total: @Model.DistinctInterests</p>
+    </div>
+
+    <!-- Provincial Distribution (Pie Chart) -->
+    <div class="dashboard-item provincial-distribution">
+        <h2>Provincial Distribution</h2>
+        <canvas id="provincialChart"></canvas>
+    </div>
+</div>
+
+<div class="dashboard-container">
+    <!-- Submission Chart (Line Chart) -->
+    <div class="dashboard-item submission-chart">
+        <h2>Submission Chart</h2>
+        <canvas id="submissionChart"></canvas>
+    </div>
+
+    <!-- Age Distribution (Bar Chart) -->
+    <div class="dashboard-item age-distribution" style="margin-bottom: 20px; text-align: center;">
+        <h2>Age Distribution</h2>
+        <canvas id="ageChart"></canvas>
+    </div>
+
+    <!-- Department Distribution (Pie Chart) -->
+    <div class="dashboard-item department-distribution" style="margin-bottom: 20px; text-align: center;">
+        <h2 style="color: #333;">Department Distribution</h2>
+        <canvas id="departmentChart"></canvas>
+    </div>
+
+
+    <!-- Degree Distribution (Pie Chart) -->
+    <div class="dashboard-item degree-distribution" style="margin-bottom: 20px; text-align: center;">
+        <h2 style="color: #333;">Degree Distribution</h2>
+        <canvas id="degreeChart"></canvas>
+    </div>
+</div>
+
+<div class="dashboard-container">
+<!-- Students Status Grid -->
+<div class="dashboard-item students-status-grid" style="margin-bottom: 20px;">
+    <h2 style="text-align: center; color: #333;">Students Status Grid</h2>
+
+    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+        <tr>
+            <th style="padding: 10px; text-align: left; background-color: #f2f2f2;">Status</th>
+            <th style="padding: 10px; text-align: left; background-color: #f2f2f2;">Count</th>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">Currently Studying</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">@Model.StudentsCurrentlyStudying</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">Recently Enrolled</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">@Model.StudentsRecentlyEnrolled</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">About to Graduate</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">@Model.StudentsAboutToGraduate</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">Graduated</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">@Model.StudentsGraduated</td>
+        </tr>
+    </table>
+</div>
+<!-- Gender Distribution (Pie Chart) -->
+<div class="dashboard-item gender-distribution" style="margin-bottom: 20px; text-align: center;">
+    <h2 style="color: #333;">Gender Distribution</h2>
+    <canvas id="genderChart"></canvas>
+</div>
+    
+    <!-- Most Active Hours -->
+    <div class="dashboard-item most-active-hours" style="margin-bottom: 20px; border: 1px solid #ccc; padding: 10px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+        <h2>Most Active Hours</h2>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+            <thead>
+                <tr>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: center; background-color: #f2f2f2;">Hour</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var hour in Model.MostActiveHours)
+                {
+                    <tr>
+                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">@hour</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Least Active Hours -->
+    <div class="dashboard-item least-active-hours" style="margin-bottom: 20px; border: 1px solid #ccc; padding: 10px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+        <h2>Least Active Hours</h2>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+            <thead>
+                <tr>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: center; background-color: #f2f2f2;">Hour</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var hour in Model.LeastActiveHours)
+                {
+                    <tr>
+                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">@hour</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="dashboard-container">
+    <!-- Dead Hours -->
+    <div class="dashboard-item dead-hours" style="margin-bottom: 20px; border: 1px solid #ccc; padding: 10px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+        <h2>Dead Hours</h2>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+            <thead>
+                <tr>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: center; background-color: #f2f2f2;">Hour</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var hour in Model.DeadHours)
+                {
+                    <tr>
+                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">@hour</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="dashboard-item last-30-days-activity" style="margin-bottom: 20px; border: 1px solid #ccc; padding: 10px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+        <h2>Last 30 days activity</h2>
+        <canvas id="last30DaysChart" style="width: 100%; height: 100px;"></canvas> 
+    </div>
+
+</div>
+
+
+<div class="last-24-hours-activity" style="margin-bottom: 20px; border: 1px solid #ccc; padding: 10px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+    <h2>Last 24 hours activity</h2>
+    <canvas id="last24HoursChart" style="width: 100%; height: 100px;"></canvas>
+</div>
+<!-- Set global variables for use in external script -->
+<script>
+    var last30DaysLabels = @Html.Raw(Json.Serialize(Enumerable.Range(1, 30).Select(i => $"Day {i}")));
+    var last30DaysActivity = @Html.Raw(Json.Serialize(Model.Last30DaysActivity));
+    var last24labels = @Html.Raw(Json.Serialize(Enumerable.Range(0, 24).Select(i => $"{i}:00")));
+    var last24data = @Html.Raw(Json.Serialize(Model.Last24HoursActivity));
+    var ctxAge = document.getElementById('ageChart').getContext('2d');
+    var ageDistributionData = @Html.Raw(Json.Serialize(Model.AgeDistribution));
+    var deptkey = @Html.Raw(Json.Serialize(Model.DepartmentDistribution.Keys));
+    var deptdata = @Html.Raw(Json.Serialize(Model.DepartmentDistribution.Values));
+    var gnderlabel = @Html.Raw(Json.Serialize(Model.GenderDistribution.Keys));
+    var genderdata = @Html.Raw(Json.Serialize(Model.GenderDistribution.Values));
+    var degreelabel = @Html.Raw(Json.Serialize(Model.DegreeDistribution.Keys));
+    var degreedata = @Html.Raw(Json.Serialize(Model.DegreeDistribution.Values));
+    var ctxProvincial = document.getElementById('provincialChart').getContext('2d');
+    var provincialData = @Html.Raw(Json.Serialize(Model.ProvincialDistribution));
+    var ctxSubmission = document.getElementById('submissionChart').getContext('2d');
+    var ctxdata = @Json.Serialize(Model.SubmissionChart);
+</script>
+
+<!-- Include external JavaScript file -->
+<script src="/js/dashboardscript.js"></script>

@@ -1,0 +1,138 @@
+﻿@model WebApplication3.Models.Student
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Student</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <span>
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="RollNumber" class="control-label"></label>
+                    <input asp-for="RollNumber" class="form-control" />
+                    <span asp-validation-for="RollNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </span>
+            <div class="form-group">
+                <label asp-for="Gender" class="control-label"></label>
+                <select asp-for="Gender" class="form-control">
+                    <option value="">-- Select Gender --</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="PreferNotToSay">Prefer Not to Say</option>
+                </select>
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DOB" class="control-label"></label>
+                <input asp-for="DOB" class="form-control" type="date" />
+                <span asp-validation-for="DOB" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="City" class="control-label"></label>
+                @{
+                    List<string> cities = new List<string> { "Karachi", "Lahore", "Islamabad", "Quetta", "Peshawar" };
+                }
+                <select asp-for="City" class="form-control">
+                    <option value="">-- Select City --</option>
+                    @foreach (var city in cities)
+                    {
+                        <option value="@city">@city</option>
+                    }
+                </select>
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Interest" class="control-label"></label>
+                @{
+                    List<string> interests = ViewData["Interests"] as List<string>;
+                    if (interests == null)
+                    {
+                        interests = new List<string>();
+                    }
+                }
+                <select asp-for="Interest" class="form-control" asp-items="@(new SelectList(interests))">
+                    <option value="">-- Select Interest --</option>
+                </select>
+                <input type="text" id="newInterest" class="form-control mt-2" placeholder="Enter New Interest" />
+
+                <!-- Add JavaScript to handle selection and text input -->
+                <script>
+                    document.getElementById("Interest").addEventListener("change", function () {
+                        var select = document.getElementById("Interest");
+                        var newInterestInput = document.getElementById("newInterest");
+
+                        // If the selected option is empty, show the text input
+                        if (select.value === "") {
+                            newInterestInput.style.display = "block";
+                        } else {
+                            newInterestInput.style.display = "none";
+                        }
+                    });
+                </script>
+
+                <span asp-validation-for="Interest" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Dept" class="control-label"></label>
+                <input asp-for="Dept" class="form-control" />
+                <span asp-validation-for="Dept" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DegreeTitle" class="control-label"></label>
+                <select asp-for="DegreeTitle" class="form-control">
+                    <option value="">-- Select Degree Title --</option>
+                    <option value="AssociateDegree">Associate Degree</option>
+                    <option value="BachelorDegree">Bachelor Degree</option>
+                    <option value="MPhilDegree">M.Phil. Degree</option>
+                    <option value="PostGraduateDiploma">Post Graduate Diploma</option>
+                    <option value="Doctorate">Doctorate</option>
+                    <option value="PostDoctorate">Post Doctorate</option>
+                </select>
+                <span asp-validation-for="DegreeTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Subject" class="control-label"></label>
+                <input asp-for="Subject" class="form-control" />
+                <span asp-validation-for="Subject" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StartDate" class="control-label"></label>
+                <input asp-for="StartDate" class="form-control" type="date" />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndtDate" class="control-label"></label>
+                <input asp-for="EndtDate" class="form-control" type="date" />
+                <span asp-validation-for="EndtDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

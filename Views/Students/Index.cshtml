@@ -1,0 +1,224 @@
+﻿@model IEnumerable<WebApplication3.Models.Student>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<!-- Include Font Awesome for sorting icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js" integrity="correct-integrity-value" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Add Student</a>
+</p>
+<div>
+    <label for="pageSize">Page Size:</label>
+    <select id="pageSize" onchange="changePageSize()">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <!-- Add more options as needed -->
+    </select>
+
+    <button onclick="goToFirstPage()"><i class="fas fa-step-backward"></i></button>
+    <button onclick="goToPreviousPage()"><i class="fas fa-chevron-left"></i></button>
+    <span id="currentPage">1</span> / <span id="totalPages">1</span>
+    <button onclick="goToNextPage()"><i class="fas fa-chevron-right"></i></button>
+    <button onclick="goToLastPage()"><i class="fas fa-step-forward"></i></button>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th data-sort="Name" >
+                @Html.DisplayNameFor(model => model.Name)
+                <i class="sort-icon fas fa-sort"></i>
+            </th>
+            <th data-sort="RollNumber">
+                @Html.DisplayNameFor(model => model.RollNumber)
+                <i class="sort-icon fas fa-sort"></i>
+            </th>
+            <th data-sort="DOB">
+                @Html.DisplayNameFor(model => model.DOB)
+                <i class="sort-icon fas fa-sort"></i>
+            </th>
+            <th data-sort="City">
+                @Html.DisplayNameFor(model => model.City)
+                <i class="sort-icon fas fa-sort"></i>
+            </th>
+            <th data-sort="Interest">
+                @Html.DisplayNameFor(model => model.Interest)
+                <i class="sort-icon fas fa-sort"></i>
+            </th>
+            <th data-sort="Dept">
+                @Html.DisplayNameFor(model => model.Dept)
+                <i class="sort-icon fas fa-sort"></i>
+            </th>
+            <th data-sort="DegreeTitle">
+                @Html.DisplayNameFor(model => model.DegreeTitle)
+                <i class="sort-icon fas fa-sort"></i>
+            </th>
+            <th>
+                <p>Actions</p>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td data-column="Name">
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td data-column="RollNumber">
+                    @Html.DisplayFor(modelItem => item.RollNumber)
+                </td>
+                <td data-column="DOB">
+                    @Html.DisplayFor(modelItem => item.DOB)
+                </td>
+                <td data-column="City">
+                    @Html.DisplayFor(modelItem => item.City)
+                </td>
+                <td data-column="Interest">
+                    @Html.DisplayFor(modelItem => item.Interest)
+                </td>
+                <td data-column="Dept">
+                    @Html.DisplayFor(modelItem => item.Dept)
+                </td>
+                <td data-column="DegreeTitle">
+                    @Html.DisplayFor(modelItem => item.DegreeTitle)
+                </td>
+                <td>
+                    <span>
+                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    </span>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- JavaScript for sorting -->
+@section scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const headers = document.querySelectorAll('th[data-sort]');
+
+            headers.forEach(header => {
+                header.addEventListener('click', function () {
+                    sortTable(this);
+                });
+            });
+
+            function sortTable(header) {
+                const columnName = header.dataset.sort;
+                const isAscending = header.classList.toggle('asc');
+
+                // Reset other headers
+                headers.forEach(h => {
+                    if (h !== header) {
+                        h.classList.remove('asc', 'desc');
+                    }
+                });
+
+                // Implement your sorting logic here
+                // You may need to fetch data from the server and update the table accordingly
+
+                // Example: Sort the table rows based on the selected column
+                const rows = Array.from(document.querySelectorAll('tbody tr'));
+                rows.sort((a, b) => {
+                    const aValue = a.querySelector(`td[data-column="${columnName}"]`).innerText.trim();
+                    const bValue = b.querySelector(`td[data-column="${columnName}"]`).innerText.trim();
+
+                    if (isAscending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+                });
+
+                // Update the table with sorted rows
+                const tbody = document.querySelector('tbody');
+                tbody.innerHTML = '';
+                rows.forEach(row => tbody.appendChild(row));
+            }
+        });
+        
+        let pageSize = 5; // Default page size
+        let currentPage = 1;
+
+        function changePageSize() {
+            pageSize = parseInt(document.getElementById('pageSize').value);
+            currentPage = 1; // Reset to the first page when changing page size
+            updateTable();
+        }
+
+        function goToFirstPage() {
+            currentPage = 1;
+            updateTable();
+        }
+
+        function goToPreviousPage() {
+                console.log('goToPreviousPage function called');
+            if (currentPage > 1) {
+                currentPage--;
+                updateTable();
+            }
+        }
+
+            function goToNextPage() {
+                const totalRecords = @Model.Count();
+                const totalPages = Math.ceil(totalRecords / pageSize);
+
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    updateTable();
+                }
+            }
+
+        function goToLastPage() {
+            // Example: You need to know the total number of pages (totalPages)
+            // Update the logic based on your total record count
+            const totalRecords = @Model.Count();
+            const totalPages = Math.ceil(totalRecords / pageSize);
+
+            currentPage = totalPages;
+            updateTable();
+        }
+
+        function updateTable() {
+            // Calculate the start and end indices for the current page
+            const startIdx = (currentPage - 1) * pageSize;
+            const endIdx = startIdx + pageSize;
+
+            // Get all rows in the table body
+            const rows = document.querySelectorAll('tbody tr');
+
+            // Hide all rows
+            rows.forEach(row => {
+                row.style.display = 'none';
+            });
+
+            // Display only the rows for the current page
+            for (let i = startIdx; i < rows.length && i < endIdx; i++) {
+                rows[i].style.display = '';
+            }
+
+            // Update UI elements for current page and total pages
+            document.getElementById('currentPage').innerText = currentPage;
+
+            // Example: You need to know the total number of pages (totalPages)
+            // Update the logic based on your total record count
+            const totalRecords = @Model.Count();
+            const totalPages = Math.ceil(totalRecords / pageSize);
+
+            document.getElementById('totalPages').innerText = totalPages;
+        }
+            updateTable();
+        
+
+    </script>
+}
